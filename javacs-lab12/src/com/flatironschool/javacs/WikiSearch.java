@@ -30,6 +30,7 @@ public class WikiSearch {
 		this.map = map;
 	}
 	
+	
 	/**
 	 * Looks up the relevance of a given URL.
 	 * 
@@ -61,7 +62,20 @@ public class WikiSearch {
 	 */
 	public WikiSearch or(WikiSearch that) {
         // FILL THIS IN!
-		return null;
+		Map<String, Integer> m= new HashMap<String, Integer>();
+		for(String k: this.map.keySet()){
+			if(that.map.containsKey(k)){
+				m.put(k,totalRelevance(this.map.get(k),that.map.get(k)));
+			}else{
+				m.put(k,this.map.get(k));
+			}
+		}
+		for(String k2: that.map.keySet()){
+			if(!m.containsKey(k2)){
+				m.put(k2,that.map.get(k2));
+			}
+		}
+		return new WikiSearch(m);
 	}
 	
 	/**
@@ -72,7 +86,14 @@ public class WikiSearch {
 	 */
 	public WikiSearch and(WikiSearch that) {
         // FILL THIS IN!
-		return null;
+		Map<String, Integer> m=new HashMap<String, Integer>();
+		for(String k: this.map.keySet()){
+			if(that.map.containsKey(k)){
+				m.put(k,totalRelevance(this.map.get(k),that.map.get(k)));
+			}
+		}
+		return new WikiSearch(m);
+		
 	}
 	
 	/**
@@ -83,7 +104,13 @@ public class WikiSearch {
 	 */
 	public WikiSearch minus(WikiSearch that) {
         // FILL THIS IN!
-		return null;
+		Map<String, Integer> m=new HashMap<String, Integer>();
+		for(String k: this.map.keySet()){
+			if(!that.map.containsKey(k)){
+				m.put(k,this.map.get(k));
+			}
+		}
+		return new WikiSearch(m);
 	}
 	
 	/**
@@ -105,8 +132,19 @@ public class WikiSearch {
 	 */
 	public List<Entry<String, Integer>> sort() {
         // FILL THIS IN!
-		return null;
+		    Comparator<Entry<String, Integer>> comparator = new Comparator<Entry<String, Integer>>() {
+				@Override
+				public int compare(Entry<String,Integer> e1, Entry<String,Integer> e2) {
+					return e1.getValue().compareTo(e2.getValue());
+				}
+			};
+			List<Entry<String,Integer>> lst=new LinkedList<Entry<String,Integer>>();
+			lst.addAll(map.entrySet());
+			Collections.sort(lst,comparator);
+			return lst;
 	}
+	
+	
 
 	/**
 	 * Performs a search and makes a WikiSearch object.
